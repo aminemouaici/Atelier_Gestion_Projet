@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <h:outputStylesheet library="css" name="style.css"/>
+    <title>Oceania Hotels</title>
+</h:head>
+
+<h:body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="logo">OCEANIA</div>
+        <nav>
+            <ul>
+                <li>Destinations</li>
+                <li>Hôtels</li>
+                <li>Offres</li>
+                <li>Contact</li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="slider">
+            <span class="slide s1"></span>
+            <span class="slide s2"></span>
+            <span class="slide s3"></span>
+            <span class="slide s4"></span>
+        </div>
+
+        <div class="hero-overlay">
+            <h1>Bienvenue chez Oceania Hotels</h1>
+            <!-- Recherche rapide avec JSF -->
+            <h:form styleClass="search-bar">
+                <h:inputText id="keywordSearch" 
+                             value="#{rechercheBean.motCle}" 
+                             placeholder="Rechercher une offre (ex : Bali, 5 étoiles, vue mer...)"/>
+                <h:commandButton value="Rechercher" 
+                                action="#{rechercheBean.rechercherSimple}"
+                                styleClass="search-button"/>
+            </h:form>
+        </div>
+    </section>
+
+    <!-- DESCRIPTION AVEC CARTES -->
+    <section class="about-section">
+        <div class="about-container">
+            <h2>Découvrez l'expérience Oceania</h2>
+
+            <div class="about-cards">
+
+                <!-- DESTINATIONS -->
+                <div class="about-card">
+                    <h:graphicImage library="images" name="imggg.jpg" alt="Destinations"/>
+                    <div class="card-content">
+                        <h3>Destinations</h3>
+                        <p>Explorez les plus belles destinations à travers le monde.</p>
+                        <h:commandButton value="Découvrir" 
+                                        action="#{navigationBean.versPagesDestinations}"/>
+                    </div>
+                </div>
+
+                <!-- HOTELS -->
+                <div class="about-card">
+                    <h:graphicImage library="images" name="imgg.jpg" alt="Hôtels"/>
+                    <div class="card-content">
+                        <h3>Hôtels</h3>
+                        <p>Des hôtels soigneusement sélectionnés pour votre confort.</p>
+                        <h:commandButton value="Voir les hôtels" 
+                                        action="#{navigationBean.versPageHotels}"/>
+                    </div>
+                </div>
+
+                <!-- SEJOUR -->
+                <div class="about-card">
+                    <h:graphicImage library="images" name="img.jpg" alt="Séjour"/>
+                    <div class="card-content">
+                        <h3>Séjour sur mesure</h3>
+                        <p>Créez un séjour qui vous ressemble en quelques clics.</p>
+                        <a href="#formulaire">
+                            <button>Créer mon séjour</button>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FORMULAIRE OFFRE IDEALE -->
+    <section class="offer-form full-section" id="formulaire">
+        <div class="offer-overlay">
+            <h2>Trouvez votre séjour idéal</h2>
+            <h:form id="search-form">
+                <div class="form-group">
+                    <label for="destination">Destination</label>
+                    <h:inputText id="destination" 
+                                value="#{offreBean.destination}" 
+                                placeholder="Où souhaitez-vous aller ?"/>
+                </div>
+                
+                <div class="form-group">
+                    <label for="nbJours">Nombre de jours</label>
+                    <h:inputText id="nbJours" 
+                                value="#{offreBean.nombreJours}" 
+                                type="number">
+                        <f:validateLongRange minimum="1" maximum="30"/>
+                    </h:inputText>
+                </div>
+                
+                <div class="form-group">
+                    <label for="hotelStars">Nombre d'étoiles de l'hôtel</label>
+                    <h:selectOneMenu id="hotelStars" value="#{offreBean.nombreEtoiles}">
+                        <f:selectItem itemValue="5" itemLabel="5 étoiles"/>
+                        <f:selectItem itemValue="4" itemLabel="4 étoiles"/>
+                        <f:selectItem itemValue="3" itemLabel="3 étoiles"/>
+                        <f:selectItem itemValue="2" itemLabel="2 étoiles"/>
+                        <f:selectItem itemValue="1" itemLabel="1 étoile"/>
+                    </h:selectOneMenu>
+                </div>
+                
+                <div class="form-group">
+                    <label for="budget">Budget max</label>
+                    <h:inputText id="budget" 
+                                value="#{offreBean.budgetMax}" 
+                                placeholder="€" 
+                                type="number">
+                        <f:validateLongRange minimum="1" maximum="50000"/>
+                    </h:inputText>
+                </div>
+                
+                <div class="form-group">
+                    <label for="activites">Type d'activités</label>
+                    <h:selectOneMenu id="activites" value="#{offreBean.typeActivites}">
+                        <f:selectItem itemValue="toutes" itemLabel="Toutes"/>
+                        <f:selectItem itemValue="historique" itemLabel="Historique"/>
+                        <f:selectItem itemValue="loisirs" itemLabel="Loisirs"/>
+                        <f:selectItem itemValue="les-deux" itemLabel="Les deux"/>
+                    </h:selectOneMenu>
+                </div>
+                
+                <div class="form-group">
+                    <label for="rythme">Rythme</label>
+                    <h:selectOneMenu id="rythme" value="#{offreBean.rythme}">
+                        <f:selectItem itemValue="detendu" itemLabel="Détendu"/>
+                        <f:selectItem itemValue="modere" itemLabel="Modéré"/>
+                        <f:selectItem itemValue="intensif" itemLabel="Intensif"/>
+                    </h:selectOneMenu>
+                </div>
+                
+                <div class="form-group">
+                    <label for="transport">Type de transport</label>
+                    <h:selectOneMenu id="transport" value="#{offreBean.typeTransport}">
+                        <f:selectItem itemValue="" itemLabel="Tous"/>
+                        <f:selectItem itemValue="pied" itemLabel="A pied"/>
+                        <f:selectItem itemValue="bus" itemLabel="En bus"/>
+                        <f:selectItem itemValue="bateau" itemLabel="En bateau"/>
+                    </h:selectOneMenu>
+                </div>
+                
+                <h:commandButton value="Rechercher" 
+                                action="#{offreBean.construireOffres}"
+                                styleClass="submit-button"/>
+            </h:form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>© 2026 Oceania Hotels – Tous droits réservés</p>
+    </footer>
+
+    <!-- JavaScript pour le header scrollable -->
+    <h:outputScript>
+        const header = document.querySelector('.header');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 80) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </h:outputScript>
+
+</h:body>
+</html>

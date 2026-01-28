@@ -2,6 +2,7 @@ package business.service;
 
 import business.domain.Hotel;
 import business.domain.Site;
+import dao.TravelDao;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  * - Les méthodes de recherche textuelle utiliseront Lucene
  * - Les méthodes de recherche structurelle utiliseront SQL
  */
-public interface TravelDataAccess {
+public interface TravelDataAccess extends TravelDao {
     
     // ==================== Recherche de Sites ====================
     

@@ -10,6 +10,7 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -279,4 +280,52 @@ public class MockTravelDataAccess implements TravelDataAccess {
     public List<Hotel> getAllHotels() {
         return new ArrayList<>(fakeHotels);
     }
+
+	@Override
+	public List<Site> findAllSites() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<Site> findSiteById(int siteId) {
+		// TODO Auto-generated method stub
+		return Optional.empty();
+	}
+
+	@Override
+	public List<Site> findSitesByType(String siteType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Site> findSitesByPriceRange(double min, double max) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Hotel> findAllHotels() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<Hotel> findHotelById(int hotelId) {
+		// TODO Auto-generated method stub
+		return Optional.empty();
+	}
+
+	@Override
+	public List<Hotel> findHotelsByMinStars(int minStars) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Hotel> findHotelsByPriceRange(double min, double max) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

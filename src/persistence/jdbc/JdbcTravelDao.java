@@ -83,7 +83,7 @@ public class JdbcTravelDao implements TravelDao {
     @Override
     public List<Site> findSitesByKeywords(String keywords) {
         /**
-         * REQUÊTE MIXTE - PLAN 1 (conforme cahier des charges page 8)
+         * REQUÊTE MIXTE - PLAN 1
          * 
          * Format : "SELECT ... FROM Site WITH mot-clés"
          * 
@@ -97,7 +97,7 @@ public class JdbcTravelDao implements TravelDao {
         String mixedQuery = "SELECT id_site FROM Site WITH " + 
                           (keywords == null ? "" : keywords);
         
-        JoinedOperator joined = new JoinedOperator(SITE_KEY_COL, SITE_DOCS_DIR);
+        JoinedOperator joined = new JoinedOperator("Site", SITE_KEY_COL, SITE_DOCS_DIR);
         joined.init(mixedQuery);
         
         // Récupérer les IDs triés par score décroissant
@@ -288,32 +288,79 @@ public class JdbcTravelDao implements TravelDao {
     
     @Override
     public List<Hotel> findHotelsByKeywords(String keywords) {
-        String query =
-                "SELECT id_hotel, name, latitude, longitude, star_rating, beach_name, price_per_night " +
-                "FROM Hotel " +
-                "WHERE name LIKE ? OR beach_name LIKE ? " +
-                "ORDER BY star_rating DESC";
-        
+
+        // 1) Nettoyer et découper les mots-clés
+        String trimmed = (keywords == null) ? "" : keywords.trim();
+
+        // Si l'utilisateur n'a rien tapé : on retourne tout (ou tu peux retourner liste vide si tu préfères)
+        if (trimmed.isEmpty()) {
+            String query =
+                "SELECT id_hotel, name, price_per_night, latitude, longitude, star_rating, beach_name, description " +
+                "FROM hotel " +
+                "ORDER BY id_hotel";
+
+            JdbcExecuteQuery exec = new JdbcExecuteQuery();
+            exec.prepareQuery(query);
+
+            List<Hotel> hotels = new ArrayList<>();
+            try {
+                exec.sqlExecutePreparedQuery();
+                ResultSet rs = exec.getResultSet();
+                while (rs.next()) {
+                    hotels.add(mapHotel(rs));
+                }
+            } catch (Exception e) {
+                System.err.println("❌ SQL Exception in findHotelsByKeywords (empty keywords): " + e.getMessage());
+                e.printStackTrace();
+            } finally {
+                exec.close();
+            }
+            return hotels;
+        }
+
+        String[] words = trimmed.split("\\s+"); // séparation par espaces multiples
+
+        // 2) Construire une requête avec OR sur chaque mot
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT id_hotel, name, price_per_night, latitude, longitude, star_rating, beach_name, description ")
+          .append("FROM hotel ")
+          .append("WHERE ");
+
+        for (int i = 0; i < words.length; i++) {
+            sb.append("description COLLATE utf8mb4_general_ci LIKE ?");
+            if (i < words.length - 1) {
+                sb.append(" OR ");
+            }
+        }
+
+        sb.append(" ORDER BY id_hotel");
+
+        String query = sb.toString();
+
+        // 3) Préparer et binder les paramètres
         JdbcExecuteQuery exec = new JdbcExecuteQuery();
         exec.prepareQuery(query);
-        
+
         List<Hotel> hotels = new ArrayList<>();
         try {
-            String searchPattern = "%" + (keywords != null ? keywords : "") + "%";
-            exec.getPreparedStatement().setString(1, searchPattern);
-            exec.getPreparedStatement().setString(2, searchPattern);
-            
+            for (int i = 0; i < words.length; i++) {
+                exec.getPreparedStatement().setString(i + 1, "%" + words[i] + "%");
+            }
+
             exec.sqlExecutePreparedQuery();
-            
+
             ResultSet rs = exec.getResultSet();
             while (rs.next()) {
                 hotels.add(mapHotel(rs));
             }
+
         } catch (Exception e) {
             System.err.println("❌ SQL Exception in findHotelsByKeywords: " + e.getMessage());
+            e.printStackTrace();
         } finally {
             exec.close();
         }
+
         return hotels;
     }
     

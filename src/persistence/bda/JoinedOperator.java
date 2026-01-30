@@ -24,6 +24,7 @@ public class JoinedOperator implements Operator<Map.Entry<Integer, Double>> {
     
     private final String keyCol;
     private final String docsDir;
+    private final String tableName;
     
     private final SqlOperator sqlOp = new SqlOperator();
     private final TextualOperator txtOp;
@@ -34,10 +35,12 @@ public class JoinedOperator implements Operator<Map.Entry<Integer, Double>> {
     /**
      * Constructeur.
      * 
+     * @param tableName Nom de la table T (ex: "Site", "Hotel")
      * @param keyCol Nom de la colonne clé (ex: "id_site")
      * @param docsDir Répertoire R contenant les fichiers .txt
      */
-    public JoinedOperator(String keyCol, String docsDir) {
+    public JoinedOperator(String tableName, String keyCol, String docsDir) {
+        this.tableName = tableName;  // ✅ AJOUTÉ
         this.keyCol = keyCol;
         this.docsDir = docsDir;
         this.txtOp = new TextualOperator(keyCol, docsDir);
@@ -111,7 +114,9 @@ public class JoinedOperator implements Operator<Map.Entry<Integer, Double>> {
         if (idx < 0) return sql;
         
         int afterSelect = idx + "select".length();
-        return sql.substring(0, afterSelect) + " " + key + ", " + sql.substring(afterSelect).trim();
+        
+        return sql.substring(0, afterSelect) + " " + tableName + "." + key + ", " + 
+               sql.substring(afterSelect).trim();
     }
     
     @Override
@@ -135,3 +140,6 @@ public class JoinedOperator implements Operator<Map.Entry<Integer, Double>> {
         txtOp.close();
     }
 }
+
+
+

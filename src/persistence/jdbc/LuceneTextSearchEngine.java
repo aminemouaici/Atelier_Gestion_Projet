@@ -23,9 +23,6 @@ public class LuceneTextSearchEngine implements TextSearchEngine {
         "C:/Users/amine/eclipse-workspace/agpFinal/site_description_folder";
     
     // Répertoire R pour les descriptions d'hôtels (si nécessaire)
-    // Note : Actuellement non utilisé car les hôtels utilisent SQL LIKE
-    private static final String HOTEL_DOCS_DIR = 
-        "C:/Users/amine/eclipse-workspace/agpFinal/hotel_description_folder";
     
     @Override
     public List<Integer> searchSiteIdsByKeywords(String keywords) {

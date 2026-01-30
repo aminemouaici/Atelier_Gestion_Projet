@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <!-- DATA ACCESS : Implémentation JDBC + Lucene -->
-    <bean id="dataAccess" class="persistence.jdbc.JdbcTravelDao"/>
+    <!-- ============================================ -->
+    <!-- Configuration Spring IoC - Business Layer   -->
+    <!-- ============================================ -->
+
+    <!-- 
+        DATA ACCESS : Mock temporaire 
+        ════════════════════════════════════════════════════════════
+        IMPORTANT : Remplacer par l'implémentation de l'équipe persistance
+        Exemple : <bean id="dataAccess" class="persistence.jdbc.JdbcTravelDataAccess"/>
+    -->
+    <bean id="dataAccess" class="business.service.JdbcTravelDataAccess"/>
 
     <!-- Scoring -->
     <bean id="priceCalculator" class="business.scoring.PriceCalculator"/>
@@ -17,7 +33,11 @@
         <property name="comfortScorer" ref="comfortScorer"/>
     </bean>
 
-    <!-- SERVICE PRINCIPAL -->
+    <!-- 
+        SERVICE PRINCIPAL
+        ════════════════════════════════════════════════════════════
+        Point d'entrée pour les Beans JSF
+    -->
     <bean id="travelService" class="business.service.TravelService">
         <property name="generator" ref="offerGenerator"/>
         <property name="dataAccess" ref="dataAccess"/>

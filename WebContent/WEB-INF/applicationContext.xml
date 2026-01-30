@@ -1,7 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <!-- Configuration Spring Web -->
-    <!-- Les beans métier sont définis dans business/spring/spring.xml -->
+    <!-- ================================================================== -->
+    <!--                    CONFIGURATION SPRING IoC                        -->
+    <!--                      Oceania Hotels - AGP 2026                     -->
+    <!-- ================================================================== -->
+
+    <!-- =========================== -->
+    <!-- COUCHE PERSISTANCE (Mock)   -->
+    <!-- =========================== -->
     
+    <!-- 
+        MockTravelDataAccess : Implémentation temporaire avec données en dur
+        À REMPLACER par la vraie implémentation quand la BDD sera prête
+        Exemple : <bean id="travelDataAccess" class="persistence.jdbc.JdbcTravelDataAccess"/>
+    -->
+    <bean id="travelDataAccess" class="persistence.jdbc.JdbcTravelDataAccess"/>
+
+    <!-- =========================== -->
+    <!-- COUCHE BUSINESS             -->
+    <!-- =========================== -->
+    
+    <!-- Scoring -->
+    <bean id="priceCalculator" class="business.scoring.PriceCalculator"/>
+    <bean id="comfortScorer" class="business.scoring.ComfortScorer"/>
+
+    <!-- Planning (Strategy + Factory) -->
+    <bean id="strategyFactory" class="business.planning.StrategyFactory"/>
+    
+    <bean id="offerGenerator" class="business.planning.OfferGenerator">
+        <property name="factory" ref="strategyFactory"/>
+        <property name="priceCalculator" ref="priceCalculator"/>
+        <property name="comfortScorer" ref="comfortScorer"/>
+    </bean>
+
+    <!-- Service principal (Façade) -->
+    <bean id="travelService" class="business.service.TravelService">
+        <property name="generator" ref="offerGenerator"/>
+        <property name="dataAccess" ref="travelDataAccess"/>
+    </bean>
+
+    <!-- =========================== -->
+    <!-- COUCHE PRÉSENTATION (Beans) -->
+    <!-- =========================== -->
+    
+    <!-- Bean de recherche simple -->
+    <bean id="searchBean" class="beans.SearchBean" scope="session">
+        <property name="travelService" ref="travelService"/>
+    </bean>
+
 </beans>
